@@ -1,4 +1,4 @@
-//------------------------------------------------------------------------------
+﻿//------------------------------------------------------------------------------
 // VERSION 0.9.1
 //
 // LICENSE
@@ -463,7 +463,7 @@ struct SafeType
     explicit operator T() const { return Get(); }
 
     T Get() const { return m_Value; }
-
+    auto operator<=>(const SafeType& other) const noexcept = default;
 private:
     T m_Value;
 };
@@ -486,22 +486,12 @@ struct SafePointerType
     template <typename T = void> T* AsPointer() const { return reinterpret_cast<T*>(this->Get()); }
 
     explicit operator bool() const { return *this != Invalid; }
+
+	auto operator<=>(const SafePointerType& other) const noexcept = default;
 };
 
 template <typename Tag>
 const Tag SafePointerType<Tag>::Invalid = { 0 };
-
-template <typename Tag>
-inline bool operator==(const SafePointerType<Tag>& lhs, const SafePointerType<Tag>& rhs)
-{
-    return lhs.Get() == rhs.Get();
-}
-
-template <typename Tag>
-inline bool operator!=(const SafePointerType<Tag>& lhs, const SafePointerType<Tag>& rhs)
-{
-    return lhs.Get() != rhs.Get();
-}
 
 } // namespace Details
 
